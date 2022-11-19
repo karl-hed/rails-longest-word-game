@@ -4,26 +4,12 @@ require 'json'
 class GamesController < ApplicationController
   def new
     @letters = 10.times.map { [*'a'..'z'].sample }
+    # @letters = %w[h e l l o]
+    session[:letters] = @letters
   end
 
   def letters?(string, grid)
-    # n_duplicate_letters = string.chars.uniq.count { |char| string.count(char) > 1 }
-    # has_letters = false
-
-    # if n_duplicate_letters < 3
-    #   has_letters = string.chars.all? do |char|
-    #     # grid.join.downcase.include? char.downcase
-    #     # grid.downcase.include? char.downcase
-    #     @letters.join.downcase.include? char.downcase
-    #   end
-    # else
-    #   return false
-    # end
-
-    # return false if n_duplicate_letters.positive?
-
-    # has_letters
-    true
+    string.chars.all? { |char| grid.join.downcase.include? char.downcase }
   end
 
   def score
@@ -32,13 +18,12 @@ class GamesController < ApplicationController
     url = "https://wagon-dictionary.herokuapp.com/#{params[:word]}"
     word_serialized = URI.open(url).read
     word = JSON.parse(word_serialized)
+    @letters = session[:letters]
 
     if word['found']
       # Verify if all letters in attempt are in generate_grid(grid)
-      @message = "found #{params[:word]}"
-      if letters?(params[:word], @letters)
-        @message = "Congratulations! #{params[:word]} is a valid English word!"
-      else
+      @message = "Congratulations! #{params[:word]} is a valid English word!"
+      if !letters?(params[:word], @letters)
         @message = "Sorry but #{params[:word]} can't be built out of #{@letters}."
       end
     else
