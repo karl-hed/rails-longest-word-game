@@ -7,18 +7,23 @@ class GamesController < ApplicationController
   end
 
   def letters?(string, grid)
-    n_duplicate_letters = string.chars.uniq.count { |char| string.count(char) > 1 }
-    has_letters = false
+    # n_duplicate_letters = string.chars.uniq.count { |char| string.count(char) > 1 }
+    # has_letters = false
 
-    if n_duplicate_letters < 3
-      has_letters = string.chars.all? do |char|
-        grid.join.downcase.include? char.downcase
-      end
-    end
+    # if n_duplicate_letters < 3
+    #   has_letters = string.chars.all? do |char|
+    #     # grid.join.downcase.include? char.downcase
+    #     # grid.downcase.include? char.downcase
+    #     @letters.join.downcase.include? char.downcase
+    #   end
+    # else
+    #   return false
+    # end
 
-    return false if n_duplicate_letters.positive?
+    # return false if n_duplicate_letters.positive?
 
-    has_letters
+    # has_letters
+    true
   end
 
   def score
@@ -31,11 +36,11 @@ class GamesController < ApplicationController
     if word['found']
       # Verify if all letters in attempt are in generate_grid(grid)
       @message = "found #{params[:word]}"
-      # if letters?(params[:word], @letters)
-      #   @message = "Congratulations! #{params[:word]} is a valid English word!"
-      # else
-      #   @message = "Sorry but #{params[:word]} can't be built out of #{@letters}."
-      # end
+      if letters?(params[:word], @letters)
+        @message = "Congratulations! #{params[:word]} is a valid English word!"
+      else
+        @message = "Sorry but #{params[:word]} can't be built out of #{@letters}."
+      end
     else
       @message = "Sorry but #{params[:word]} does not seem to be a valid English word."
     end
